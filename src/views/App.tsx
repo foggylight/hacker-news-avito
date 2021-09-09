@@ -1,59 +1,67 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 
 import './App.css';
 
 import { Link, Route, Switch } from 'react-router-dom';
-import { Container, Grid, Typography } from '@material-ui/core';
+import { AppBar, Button, Container, Grid, Toolbar, Typography } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import Story from './Story';
-import { getStoriesData } from '../api/getData';
-
-enum Routes {
-  main = '/',
-  story = '/story',
-}
+import { IStore } from '../models/storeModel';
+import { fetchStories } from '../store/storiesReducer';
 
 const App = (): ReactElement => {
-  const [storiesPages, updatePages] = useState((): JSX.Element[] => []);
-  const [stories, updateData] = useState((): JSX.Element[] => []);
+  const dispatch = useDispatch();
+
+  const stories = useSelector((state: IStore) => state.stories);
 
   useEffect(() => {
-    getStoriesData().then(data => {
-      const updatedStories = data.map(story => (
-        <Link key={story.id} to={`/${story.id}`}>
-          <Grid container>
-            <Grid item>{story.title}</Grid>
-          </Grid>
-        </Link>
-      ));
-      updateData(updatedStories);
-      const updatedPages = data.map(story => (
-        <Route exact key={story.id} path={`/${story.id}`}>
-          <Story
-            id={story.id}
-            by={story.by}
-            descendants={story.descendants}
-            score={story.score}
-            time={story.time}
-            title={story.title}
-            url={story.url}
-            kids={story.kids}
-          />
-        </Route>
-      ));
-      updatePages(updatedPages);
-    });
+    const updateInterval = setInterval(() => dispatch(fetchStories()), 60000);
+    return () => clearInterval(updateInterval);
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchStories());
+  }, []);
+
+  const links = stories.map(story => (
+    <Link key={story.id} to={`/${story.id}`}>
+      <Grid container>
+        <Grid item>{story.title}</Grid>
+      </Grid>
+    </Link>
+  ));
+
+  const pages = stories.map(story => (
+    <Route exact key={story.id} path={`/${story.id}`}>
+      <Story
+        id={story.id}
+        by={story.by}
+        descendants={story.descendants}
+        score={story.score}
+        time={story.time}
+        title={story.title}
+        url={story.url}
+        kids={story.kids}
+      />
+    </Route>
+  ));
 
   return (
     <Container maxWidth='sm'>
-      <Link to={Routes.main}>
-        <Typography variant='h1'>Hacker News</Typography>
-      </Link>
+      <AppBar position='static'>
+        <Toolbar>
+          <Link to='/'>
+            <Typography variant='h6'>Hacker News</Typography>
+          </Link>
+          <Button onClick={() => dispatch(fetchStories())}>Update news</Button>
+        </Toolbar>
+      </AppBar>
+      {stories.length === 0 ? <Typography variant='h6'>Please wait, news are updating!</Typography> : ''}
       <Switch>
-        <Route exact path={Routes.main}>
-          {stories}
+        <Route exact path='/'>
+          {links}
         </Route>
-        {storiesPages}
+        {pages}
       </Switch>
     </Container>
   );

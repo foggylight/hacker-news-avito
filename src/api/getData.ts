@@ -1,4 +1,4 @@
-import { IStory } from '../models/StoryModel';
+import { IStory } from '../models/storyModel';
 import { API_URL } from '../utils';
 
 export const getStoryData = async (id: number): Promise<IStory> => {
