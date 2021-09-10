@@ -7,7 +7,7 @@ import { AppBar, Button, Container, Grid, makeStyles, Toolbar, Typography } from
 import { useDispatch, useSelector } from 'react-redux';
 import Story from './Story';
 import { IStore } from '../models/storeModel';
-import { fetchStories } from '../store/storiesReducer';
+import { fetchStories } from '../store/reducer';
 import StoryCard from '../components/StoryCard';
 
 const useStyles = makeStyles({
@@ -42,7 +42,6 @@ const App = (): ReactElement => {
       key={story.id}
       id={story.id}
       by={story.by}
-      descendants={story.descendants}
       score={story.score}
       time={story.time}
       title={story.title}
@@ -56,7 +55,6 @@ const App = (): ReactElement => {
       <Story
         id={story.id}
         by={story.by}
-        descendants={story.descendants}
         score={story.score}
         time={story.time}
         title={story.title}
@@ -66,6 +64,12 @@ const App = (): ReactElement => {
     </Route>
   ));
 
+  const updateNewsBtn = (
+    <Button onClick={() => dispatch(fetchStories())} variant='contained' color='primary'>
+      Update news
+    </Button>
+  );
+
   return (
     <Container maxWidth='md'>
       <AppBar position='sticky' color='inherit' className={classes.header}>
@@ -73,9 +77,7 @@ const App = (): ReactElement => {
           <NavLink to='/'>
             <Typography variant='h6'>{location.pathname === '/' ? 'Hacker News' : 'Back to news'}</Typography>
           </NavLink>
-          <Button onClick={() => dispatch(fetchStories())} variant='contained' color='primary'>
-            Update news
-          </Button>
+          {location.pathname === '/' ? updateNewsBtn : ''}
         </Toolbar>
       </AppBar>
       {stories.length === 0 ? <Typography variant='h6'>Please wait, news are updating!</Typography> : ''}

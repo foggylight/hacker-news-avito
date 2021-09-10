@@ -38,7 +38,7 @@ const StoryCard = ({ id, score, by, time, title }: IStory): ReactElement => {
         <CardContent className={classes.content}>
           <Typography className={classes.text}>{score} point</Typography>
           <Typography className={classes.text}>by {by}</Typography>
-          <Typography className={classes.text}>{getDate(time)}</Typography>
+          <Typography className={classes.text}>published: {getDate(time)}</Typography>
         </CardContent>
       </Card>
     </Grid>

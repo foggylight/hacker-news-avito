@@ -1,8 +1,8 @@
 import { applyMiddleware, createStore } from '@reduxjs/toolkit';
 import thunkMiddleware from 'redux-thunk';
-import storiesReducer from './storiesReducer';
+import reducer from './reducer';
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);
-const store = createStore(storiesReducer, composedEnhancer);
+const store = createStore(reducer, composedEnhancer);
 
 export default store;
