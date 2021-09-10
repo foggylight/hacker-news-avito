@@ -2,15 +2,29 @@ import React, { ReactElement, useEffect } from 'react';
 
 import './App.css';
 
-import { Link, Route, Switch } from 'react-router-dom';
-import { AppBar, Button, Container, Grid, Toolbar, Typography } from '@material-ui/core';
+import { NavLink, Route, Switch, useLocation } from 'react-router-dom';
+import { AppBar, Button, Container, Grid, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import Story from './Story';
 import { IStore } from '../models/storeModel';
 import { fetchStories } from '../store/storiesReducer';
+import StoryCard from '../components/StoryCard';
+
+const useStyles = makeStyles({
+  header: {
+    margin: '0 0 30px',
+    borderRadius: '5px',
+  },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+});
 
 const App = (): ReactElement => {
   const dispatch = useDispatch();
+  const classes = useStyles();
+  const location = useLocation();
 
   const stories = useSelector((state: IStore) => state.stories);
 
@@ -24,11 +38,17 @@ const App = (): ReactElement => {
   }, []);
 
   const links = stories.map(story => (
-    <Link key={story.id} to={`/${story.id}`}>
-      <Grid container>
-        <Grid item>{story.title}</Grid>
-      </Grid>
-    </Link>
+    <StoryCard
+      key={story.id}
+      id={story.id}
+      by={story.by}
+      descendants={story.descendants}
+      score={story.score}
+      time={story.time}
+      title={story.title}
+      url={story.url}
+      kids={story.kids}
+    />
   ));
 
   const pages = stories.map(story => (
@@ -47,19 +67,23 @@ const App = (): ReactElement => {
   ));
 
   return (
-    <Container maxWidth='sm'>
-      <AppBar position='static'>
-        <Toolbar>
-          <Link to='/'>
-            <Typography variant='h6'>Hacker News</Typography>
-          </Link>
-          <Button onClick={() => dispatch(fetchStories())}>Update news</Button>
+    <Container maxWidth='md'>
+      <AppBar position='sticky' color='inherit' className={classes.header}>
+        <Toolbar className={classes.toolbar}>
+          <NavLink to='/'>
+            <Typography variant='h6'>{location.pathname === '/' ? 'Hacker News' : 'Back to news'}</Typography>
+          </NavLink>
+          <Button onClick={() => dispatch(fetchStories())} variant='contained' color='primary'>
+            Update news
+          </Button>
         </Toolbar>
       </AppBar>
       {stories.length === 0 ? <Typography variant='h6'>Please wait, news are updating!</Typography> : ''}
       <Switch>
         <Route exact path='/'>
-          {links}
+          <Grid container spacing={3}>
+            {links}
+          </Grid>
         </Route>
         {pages}
       </Switch>
