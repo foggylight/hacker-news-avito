@@ -6,8 +6,8 @@ import { IStory } from '../models/storyModel';
 import { getDate } from '../utils';
 
 const useStyles = makeStyles({
-  root: {
-    backgroundColor: '#fff',
+  title: {
+    fontSize: 18,
   },
   content: {
     display: 'flex',
@@ -21,9 +21,6 @@ const useStyles = makeStyles({
   text: {
     margin: '0 15px 0 0',
   },
-  title: {
-    fontSize: 18,
-  },
 });
 
 const StoryCard = ({ id, score, by, time, title }: IStory): ReactElement => {
@@ -31,7 +28,7 @@ const StoryCard = ({ id, score, by, time, title }: IStory): ReactElement => {
 
   return (
     <Grid item xs={12}>
-      <Card className={classes.root}>
+      <Card>
         <Link to={`/${id}`}>
           <CardHeader disableTypography title={title} className={classes.title} />
         </Link>

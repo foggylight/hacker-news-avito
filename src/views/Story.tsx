@@ -14,15 +14,6 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
     marginBottom: '30px',
   },
-  comment: {
-    padding: '15px',
-  },
-  commentSubtitle: {
-    color: '#555555',
-  },
-  commentBody: {
-    margin: '10px 0 15px',
-  },
 });
 
 const Story = ({ by, time, title, url, kids = [] }: IStory): ReactElement => {
@@ -40,9 +31,7 @@ const Story = ({ by, time, title, url, kids = [] }: IStory): ReactElement => {
   }, []);
 
   useEffect(() => {
-    if (kids.length !== 0) {
-      dispatch(fetchComments(kids));
-    }
+    dispatch(fetchComments(kids));
   }, []);
 
   const updateCommentsBtn = (
